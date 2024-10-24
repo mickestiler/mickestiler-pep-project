@@ -23,6 +23,11 @@ public class AccountService {
         return accountDAO.insertAccount(account);
     }
     
+    /**
+     * Helper method for addAccount.
+     * @param account
+     * @return boolean if account username exists within the database
+     */
     private boolean ifAccountUsernameExists(Account account) {
         return accountDAO.getAccountByUsername(account.getUsername()) != null;
     }

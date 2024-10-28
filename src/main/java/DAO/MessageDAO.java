@@ -34,6 +34,8 @@ public class MessageDAO {
                 message.setMessage_id(generated_message_id);
                 return message;
             }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
         }
         return null;
     }
@@ -55,7 +57,7 @@ public class MessageDAO {
                                             rs.getString("message_text"), rs.getLong("time_posted_epoch"));
                 messages.add(message);
             }
-        }catch(SQLException e){
+        } catch(SQLException e){
             System.out.println(e.getMessage());
         }
         return messages;

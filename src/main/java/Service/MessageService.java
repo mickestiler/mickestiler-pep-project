@@ -33,5 +33,7 @@ public class MessageService {
         return messageDAO.getAllMessages();
     }
 
-    private
+    public List<Message> getAllMessagesByUser(Message message) {
+        return messageDAO.getAllMessagesByUser(message.getPosted_by());
+    }
 }

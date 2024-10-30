@@ -22,11 +22,23 @@ public class AccountService {
         }
         return accountDAO.insertAccount(account);
     }
+
+    /**
+     * Service method to login if a username exists within the account table.
+     * @param account
+     * @return an account if username and password matches
+     */
+    public Account login(Account account) {
+        if (ifAccountUsernameExists(account)) {
+            return accountDAO.login(account.getUsername(), account.getPassword());
+        }
+        return null;
+    }
     
     /**
-     * Helper method for addAccount.
+     * Helper method for addAccount and login.
      * @param account
-     * @return boolean if account username exists within the database
+     * @return true if account username exists within the database, false otherwise
      */
     private boolean ifAccountUsernameExists(Account account) {
         return accountDAO.getAccountByUsername(account.getUsername()) != null;

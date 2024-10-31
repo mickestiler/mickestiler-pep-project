@@ -1,6 +1,8 @@
 package Controller;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.ArrayList;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -125,6 +127,8 @@ public class SocialMediaController {
         List<Message> listAllMessagesByUser = messageService.getAllMessagesByUser(account_id);
         if (listAllMessagesByUser != null) {
             ctx.json(listAllMessagesByUser);
+        } else {
+            ctx.json(Collections.emptyList());
         }
     }
 }

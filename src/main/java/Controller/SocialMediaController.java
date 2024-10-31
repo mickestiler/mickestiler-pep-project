@@ -34,6 +34,10 @@ public class SocialMediaController {
         app.post("/login", this::postLoginHandler);
         app.post("/messages", this::createMessageHandler);
         app.get("/messages", this::getAllMessagesHandler);
+        app.get("/message/{message_id}", this::getMessageByIdHandler);
+        app.delete("/message/{message_id}", this::deleteMessageByIdHandler);
+        app.patch("/message/{message_id}", this::updateMessageByIdHandler);
+        app.get("/accounts/{account_id}/messages", this::getAllMessagesGivenAccountIdHandler);
         return app;
     }
 
@@ -72,5 +76,25 @@ public class SocialMediaController {
     }
     private void getAllMessagesHandler(Context ctx) {
         ctx.json(messageService.getAllMessages());
+    }
+
+    private void getMessageByIdHandler(Context ctx) {
+        int message_id = Integer.parseInt(ctx.pathParam("message_id"));
+        ctx.json(messageService.getMessageById(message_id));
+    }
+
+    private void deleteMessageByIdHandler(Context ctx) {
+        int message_id = Integer.parseInt(ctx.pathParam("message_id"));
+        ctx.json(messageService.deleteMessageById(message_id));
+    }
+
+    private void updateMessageByIdHandler(Context ctx) {
+        int message_id = Integer.parseInt(ctx.pathParam("message_id"));
+        ctx.json(messageService.updateMessageById(message_id));
+    }
+
+    private void getAllMessagesGivenAccountIdHandler(Context ctx) {
+        int account_id = Integer.parseInt(ctx.pathParam("account_id"));
+        
     }
 }

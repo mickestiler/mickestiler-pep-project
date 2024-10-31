@@ -45,16 +45,21 @@ public class MessageService {
     }
 
     
-    public Message getMessageById(Message message) {
-        return messageDAO.getMessageById(message.getMessage_id());
+    public Message getMessageById(int message_id) {
+        return messageDAO.getMessageById(message_id);
     }
 
-    public Message deleteMessageById(Message message) {
-        if (getMessageById(message) != null) {
-            messageDAO.deleteMessageById(message.getMessage_id());
+    public Message deleteMessageById(int message_id) {
+        Message message = messageDAO.getMessageById(message_id);
+        if (message != null) {
+            messageDAO.deleteMessageById(message_id);
             return message;
         }
         return null;
+    }
+
+    public Message updateMessageById(int message_id) {
+        
     }
 
     /**
@@ -74,4 +79,7 @@ public class MessageService {
     private boolean ifAccountIdExists(Message message) {
         return accountDAO.getAccountById(message.getPosted_by()) != null;
     }
-}
+
+    private boolean ifMessageExists(Message message) {
+        return messageDAO.getMessageById(message) != null;
+    }

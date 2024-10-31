@@ -39,31 +39,13 @@ public class AccountDAO {
     public Account getAccountByUsername(String username) {
         Connection connection = ConnectionUtil.getConnection();
         try {
-            String sql = "SELECT * FROM account WHERE account_id = ?";
+            String sql = "SELECT * FROM account WHERE username = ?";
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
 
             preparedStatement.setString(1, username);
             ResultSet rs = preparedStatement.executeQuery();
             if(rs.next()){
-                return new Account(rs.getInt("account_id"), username, rs.getString("password"));
-            }
-        } catch(SQLException e){
-            System.out.println(e.getMessage());
-        }
-        return null;
-    }
-
-    public Account login(String username, String password) {
-        Connection connection = ConnectionUtil.getConnection();
-        try {
-            String sql = "SELECT * FROM account WHERE username = ? AND password = ?;";
-            PreparedStatement preparedStatement = connection.prepareStatement(sql);
-
-            preparedStatement.setString(1, username);
-            preparedStatement.setString(2, password);
-            ResultSet rs = preparedStatement.executeQuery();
-            if(rs.next()){
-                return new Account(rs.getInt("account_id"), username, password);
+                return new Account(rs.getInt("account_id"), rs.getString("username"), rs.getString("password"));
             }
         } catch(SQLException e){
             System.out.println(e.getMessage());

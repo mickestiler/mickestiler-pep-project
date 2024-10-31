@@ -23,14 +23,21 @@ public class MessageService {
      * @return Message if created successfully
      */
     public Message createMessage(Message message) {
-        if (message.getMessage_text().isBlank()) {
-            throw new IllegalArgumentException("Message cannot be blank");
+        if (message == null) {
+            System.out.println("Message is null");
+            return null;
         }
-        if (message.getMessage_text().length() > MAX_AMOUNT_OF_CHARACTERS) {
-            throw new IllegalArgumentException("Message must be under " + MAX_AMOUNT_OF_CHARACTERS + " characters");
+        else if (message.getMessage_text().isBlank()) {
+            System.out.println("Message cannot be blank");
+            return null;
         }
-        if (!ifAccountIdExists(message)) {
-            throw new IllegalArgumentException("Posted by account does not exist");
+        else if (message.getMessage_text().length() > MAX_AMOUNT_OF_CHARACTERS) {
+            System.out.println("Message must be under " + MAX_AMOUNT_OF_CHARACTERS + " characters");
+            return null;
+        }
+        else if (!ifAccountIdExists(message.getPosted_by())) {
+            System.out.println("Posted by account does not exist");
+            return null;
         }
         return messageDAO.insertMessage(message);
     }
@@ -44,9 +51,9 @@ public class MessageService {
         return messageDAO.getAllMessages();
     }
 
-    
     public Message getMessageById(int message_id) {
-        return messageDAO.getMessageById(message_id);
+        Message messageById = messageDAO.getMessageById(message_id);
+        return messageById;
     }
 
     public Message deleteMessageById(int message_id) {
@@ -58,8 +65,23 @@ public class MessageService {
         return null;
     }
 
-    public Message updateMessageById(int message_id) {
-        
+    public Message updateMessageById(int message_id, String message_text) {
+        try {
+            if (!ifMessageIdExists(message_id)) {
+                System.out.println("Message does not exist");
+            } 
+            else if (message_text.isBlank()) {
+                System.out.println("Message cannot be blank");
+            } 
+            else if (message_text.length() > MAX_AMOUNT_OF_CHARACTERS) {
+                System.out.println("Message must be under " + MAX_AMOUNT_OF_CHARACTERS + " characters");
+            }
+            messageDAO.updateMessageById(message_id, message_text);
+            return messageDAO.getMessageById(message_id);
+        } catch (IllegalArgumentException e) {
+            System.out.println(e.getMessage());
+            return null;
+        }   
     }
 
     /**
@@ -76,10 +98,11 @@ public class MessageService {
      * @param message
      * @return true if the posted_by id exists within account, false otherwise
      */
-    private boolean ifAccountIdExists(Message message) {
-        return accountDAO.getAccountById(message.getPosted_by()) != null;
+    private boolean ifAccountIdExists(int account_id) {
+        return accountDAO.getAccountById(account_id) != null;
     }
 
-    private boolean ifMessageExists(Message message) {
-        return messageDAO.getMessageById(message) != null;
+    private boolean ifMessageIdExists(int message_id) {
+        return messageDAO.getMessageById(message_id) != null;
     }
+}

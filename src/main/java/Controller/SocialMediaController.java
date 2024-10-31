@@ -3,6 +3,7 @@ package Controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import Model.Message;
 import Model.Account;
 import Service.AccountService;
 import Service.MessageService;
@@ -21,6 +22,7 @@ public class SocialMediaController {
 
     public SocialMediaController() {
         this.accountService = new AccountService();
+        this.messageService = new MessageService();
     }
     /**
      * In order for the test cases to work, you will need to write the endpoints in the startAPI() method, as the test
@@ -34,9 +36,9 @@ public class SocialMediaController {
         app.post("/login", this::postLoginHandler);
         app.post("/messages", this::createMessageHandler);
         app.get("/messages", this::getAllMessagesHandler);
-        app.get("/message/{message_id}", this::getMessageByIdHandler);
-        app.delete("/message/{message_id}", this::deleteMessageByIdHandler);
-        app.patch("/message/{message_id}", this::updateMessageByIdHandler);
+        app.get("/messages/{message_id}", this::getMessageByIdHandler);
+        app.delete("/messages/{message_id}", this::deleteMessageByIdHandler);
+        app.patch("/messages/{message_id}", this::updateMessageByIdHandler);
         app.get("/accounts/{account_id}/messages", this::getAllMessagesGivenAccountIdHandler);
         return app;
     }
@@ -53,9 +55,9 @@ public class SocialMediaController {
         ObjectMapper mapper = new ObjectMapper();
         Account account = mapper.readValue(ctx.body(), Account.class);
         Account addedAccount = accountService.addAccount(account);
-        if(addedAccount==null){
+        if (addedAccount==null){
             ctx.status(400);
-        }else{
+        } else {
             ctx.json(mapper.writeValueAsString(addedAccount));
         }
     }
@@ -63,16 +65,23 @@ public class SocialMediaController {
     private void postLoginHandler(Context ctx) throws JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper();
         Account account = mapper.readValue(ctx.body(), Account.class);
-        Account addedAccount = accountService.addAccount(account);
-        if(addedAccount==null){
-            ctx.status(400);
-        }else{
-            ctx.json(mapper.writeValueAsString(addedAccount));
+        Account loggedInAccount = accountService.login(account);
+        if (loggedInAccount==null){
+            ctx.status(401);
+        } else {
+            ctx.json(loggedInAccount);
         }
     }
 
-    private void createMessageHandler(Context ctx) {
-        return;
+    private void createMessageHandler(Context ctx) throws JsonProcessingException {
+        ObjectMapper mapper = new ObjectMapper();
+        Message message = mapper.readValue(ctx.body(), Message.class);
+        Message createdMessage = messageService.createMessage(message);
+        if (createdMessage == null) {
+            ctx.status(400);
+        } else {
+            ctx.json(createdMessage);
+        }
     }
     private void getAllMessagesHandler(Context ctx) {
         ctx.json(messageService.getAllMessages());
@@ -90,11 +99,11 @@ public class SocialMediaController {
 
     private void updateMessageByIdHandler(Context ctx) {
         int message_id = Integer.parseInt(ctx.pathParam("message_id"));
-        ctx.json(messageService.updateMessageById(message_id));
+        String message_text = ctx.bodyAsClass(Message.class).getMessage_text();
+        ctx.json(messageService.updateMessageById(message_id, message_text));
     }
 
     private void getAllMessagesGivenAccountIdHandler(Context ctx) {
         int account_id = Integer.parseInt(ctx.pathParam("account_id"));
-        
     }
 }

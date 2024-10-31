@@ -11,16 +11,22 @@ public class AccountService {
     }
 
     public Account addAccount(Account account) {
-        if (account.getUsername().isBlank()) {
-            throw new IllegalArgumentException("Username cannot be blank");
+        try {
+            if (account.getUsername().isBlank()) {
+                throw new IllegalArgumentException("Username cannot be blank");
+            }
+            if (account.getPassword().length() < 4) {
+                throw new IllegalArgumentException("Password must be at least 4 characters long");
+            }
+            if (ifAccountUsernameExists(account)) {
+                throw new IllegalArgumentException("Username already exists");
+            }
+            return accountDAO.insertAccount(account);
+        } catch (IllegalArgumentException e) {
+            System.out.println(e.getMessage());
+            return null;
         }
-        if (account.getPassword().length() < 4) {
-            throw new IllegalArgumentException("Password must be at least 4 characters long");
-        }
-        if (ifAccountUsernameExists(account)) {
-            throw new IllegalArgumentException("Username already exists");
-        }
-        return accountDAO.insertAccount(account);
+
     }
 
     /**
@@ -29,18 +35,20 @@ public class AccountService {
      * @return an account if username and password matches
      */
     public Account login(Account account) {
-        if (ifAccountUsernameExists(account)) {
-            return accountDAO.login(account.getUsername(), account.getPassword());
+        Account storedAccount = accountDAO.getAccountByUsername(account.getUsername());
+        if (storedAccount != null && storedAccount.getUsername().equals(account.getUsername()) && storedAccount.getPassword().equals(account.getPassword())) {
+            return storedAccount;
         }
         return null;
     }
     
     /**
-     * Helper method for addAccount and login.
+     * Helper method for addAccount.
      * @param account
      * @return true if account username exists within the database, false otherwise
      */
     private boolean ifAccountUsernameExists(Account account) {
         return accountDAO.getAccountByUsername(account.getUsername()) != null;
     }
+
 }

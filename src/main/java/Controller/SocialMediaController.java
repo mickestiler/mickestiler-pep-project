@@ -54,6 +54,13 @@ public class SocialMediaController {
         context.json("sample text");
     }
 
+    /**
+     * Handler to post an account.
+     * This will post an account so long as its attributes are valid. If the added account is null, it will provide a status
+     * of 400.
+     * @param ctx
+     * @throws JsonProcessingException
+     */
     private void postAccountHandler(Context ctx) throws JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper();
         Account account = mapper.readValue(ctx.body(), Account.class);
@@ -61,10 +68,15 @@ public class SocialMediaController {
         if (addedAccount==null){
             ctx.status(400);
         } else {
-            ctx.json(mapper.writeValueAsString(addedAccount));
+            ctx.json(addedAccount);
         }
     }
 
+    /**
+     * Handler to post for login.
+     * @param ctx
+     * @throws JsonProcessingException
+     */
     private void postLoginHandler(Context ctx) throws JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper();
         Account account = mapper.readValue(ctx.body(), Account.class);
@@ -76,6 +88,12 @@ public class SocialMediaController {
         }
     }
 
+    /**
+     * Handler to create a message.
+     * It will return a status of 400 if the newly created message is null.
+     * @param ctx
+     * @throws JsonProcessingException
+     */
     private void createMessageHandler(Context ctx) throws JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper();
         Message message = mapper.readValue(ctx.body(), Message.class);
@@ -90,6 +108,10 @@ public class SocialMediaController {
         ctx.json(messageService.getAllMessages());
     }
 
+    /**
+     * Handler to get message by its message_id.
+     * @param ctx
+     */
     private void getMessageByIdHandler(Context ctx) {
         int message_id = Integer.parseInt(ctx.pathParam("message_id"));
         Message getMessage = messageService.getMessageById(message_id);
@@ -98,6 +120,10 @@ public class SocialMediaController {
         }
     }
 
+    /**
+     * Handler to delete a message given its message_id.
+     * @param ctx
+     */
     private void deleteMessageByIdHandler(Context ctx) {
         int message_id = Integer.parseInt(ctx.pathParam("message_id"));
         Message deleteMessage = messageService.deleteMessageById(message_id);
@@ -122,6 +148,10 @@ public class SocialMediaController {
         }
     }
 
+    /**
+     * Handler to obtain all messages given an account id.
+     * @param ctx
+     */
     private void getAllMessagesGivenAccountIdHandler(Context ctx) {
         int account_id = Integer.parseInt(ctx.pathParam("account_id"));
         List<Message> listAllMessagesByUser = messageService.getAllMessagesByUser(account_id);

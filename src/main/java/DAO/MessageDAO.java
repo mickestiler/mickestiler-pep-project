@@ -107,7 +107,7 @@ public class MessageDAO {
 
     
     /**
-     * Method to update message_text by message_id.
+     * DAO method to update message_text by message_id.
      * @param message_id
      */
     public void updateMessageById(int message_id, String message_text) {
@@ -124,7 +124,11 @@ public class MessageDAO {
         }
     }
 
-
+    /**
+     * DAO method to get all messages by a specified id.
+     * @param posted_by
+     * @return list of all messages given an id
+     */
     public List<Message> getAllMessagesByUser(int posted_by) {
         Connection connection = ConnectionUtil.getConnection();
         try {

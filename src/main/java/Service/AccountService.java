@@ -5,28 +5,26 @@ import Model.Account;
 
 public class AccountService {
     AccountDAO accountDAO;
+    private static final int MIN_LENGTH_PASSWORD = 4;
 
     public AccountService() {
         accountDAO = new AccountDAO();
     }
 
     public Account addAccount(Account account) {
-        try {
-            if (account.getUsername().isBlank()) {
-                throw new IllegalArgumentException("Username cannot be blank");
-            }
-            if (account.getPassword().length() < 4) {
-                throw new IllegalArgumentException("Password must be at least 4 characters long");
-            }
-            if (ifAccountUsernameExists(account)) {
-                throw new IllegalArgumentException("Username already exists");
-            }
-            return accountDAO.insertAccount(account);
-        } catch (IllegalArgumentException e) {
-            System.out.println(e.getMessage());
+        if (account.getUsername().isBlank()) {
+            System.out.println("Username cannot be blank");
             return null;
         }
-
+        if (account.getPassword().length() < MIN_LENGTH_PASSWORD) {
+            System.out.println("Password must be at least " + MIN_LENGTH_PASSWORD + " characters long");
+            return null;
+        }
+        if (ifAccountUsernameExists(account)) {
+            System.out.println("Username already exists");
+            return null;
+        }
+        return accountDAO.insertAccount(account);
     }
 
     /**

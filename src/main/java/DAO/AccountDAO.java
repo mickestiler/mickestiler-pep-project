@@ -36,6 +36,11 @@ public class AccountDAO {
         return null;
     }
 
+    /**
+     * DAO method to get an account by username.
+     * @param username
+     * @return Account if successful
+     */
     public Account getAccountByUsername(String username) {
         Connection connection = ConnectionUtil.getConnection();
         try {
@@ -53,6 +58,11 @@ public class AccountDAO {
         return null;
     }
 
+    /**
+     * DAO method to retrieve an account given an account_id.
+     * @param account_id
+     * @return Account if successful
+     */
     public Account getAccountById(int account_id) {
         Connection connection = ConnectionUtil.getConnection();
         try {

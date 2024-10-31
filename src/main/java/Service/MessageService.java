@@ -17,7 +17,7 @@ public class MessageService {
     }
 
     /**
-     * Service method to create a message and insert it into a database. It throws an IllegalArgumentException if the message text is blank,
+     * Service method to create a message and insert it into a database. It prints a message and returns null if the message text is blank,
      * the length of the message is greater than 255 characters, or if the account does not exist in the account table.
      * @param message
      * @return Message if created successfully
@@ -66,7 +66,14 @@ public class MessageService {
         return null;
     }
 
-
+    /**
+     * Service method to update a message's message_text given its message_id. It returns null  if the message id
+     * does not exist in the message table, the message_text is. blank, or the message_text length is greater than
+     * the maximum amount of characters of 255.
+     * @param message_id
+     * @param message_text
+     * @return newly updated message
+     */
     public Message updateMessageById(int message_id, String message_text) {
         if (!ifMessageIdExists(message_id)) {
             System.out.println("Message does not exist");
@@ -102,6 +109,11 @@ public class MessageService {
         return accountDAO.getAccountById(account_id) != null;
     }
 
+    /**
+     * Helper method for updateMessageById() that returns true if message exists given a message_id.
+     * @param message_id
+     * @return true if message_id exists within message, false otherwise
+     */
     private boolean ifMessageIdExists(int message_id) {
         return messageDAO.getMessageById(message_id) != null;
     }

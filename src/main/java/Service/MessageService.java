@@ -23,11 +23,7 @@ public class MessageService {
      * @return Message if created successfully
      */
     public Message createMessage(Message message) {
-        if (message == null) {
-            System.out.println("Message is null");
-            return null;
-        }
-        else if (message.getMessage_text().isBlank()) {
+        if (message.getMessage_text().isBlank()) {
             System.out.println("Message cannot be blank");
             return null;
         }
@@ -56,6 +52,11 @@ public class MessageService {
         return messageById;
     }
 
+    /**
+     * Service method to delete a message given a message_id.
+     * @param message_id
+     * @return the deleted message
+     */
     public Message deleteMessageById(int message_id) {
         Message message = messageDAO.getMessageById(message_id);
         if (message != null) {
@@ -65,32 +66,31 @@ public class MessageService {
         return null;
     }
 
+
     public Message updateMessageById(int message_id, String message_text) {
-        try {
-            if (!ifMessageIdExists(message_id)) {
-                System.out.println("Message does not exist");
-            } 
-            else if (message_text.isBlank()) {
-                System.out.println("Message cannot be blank");
-            } 
-            else if (message_text.length() > MAX_AMOUNT_OF_CHARACTERS) {
-                System.out.println("Message must be under " + MAX_AMOUNT_OF_CHARACTERS + " characters");
-            }
-            messageDAO.updateMessageById(message_id, message_text);
-            return messageDAO.getMessageById(message_id);
-        } catch (IllegalArgumentException e) {
-            System.out.println(e.getMessage());
+        if (!ifMessageIdExists(message_id)) {
+            System.out.println("Message does not exist");
             return null;
-        }   
+        } 
+        else if (message_text.isBlank()) {
+            System.out.println("Message cannot be blank");
+            return null;
+        }
+        else if (message_text.length() > MAX_AMOUNT_OF_CHARACTERS) {
+            System.out.println("Message must be under " + MAX_AMOUNT_OF_CHARACTERS + " characters");
+            return null;
+        }
+        messageDAO.updateMessageById(message_id, message_text);
+        return messageDAO.getMessageById(message_id);
     }
 
     /**
      * Service method to get all messages by user.
-     * @param message
+     * @param posted_by
      * @return list of all messages by a user
      */
-    public List<Message> getAllMessagesByUser(Message message) {
-        return messageDAO.getAllMessagesByUser(message.getPosted_by());
+    public List<Message> getAllMessagesByUser(int posted_by) {
+        return messageDAO.getAllMessagesByUser(posted_by);
     }
 
     /**

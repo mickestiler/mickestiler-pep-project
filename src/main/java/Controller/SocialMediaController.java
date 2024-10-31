@@ -1,5 +1,6 @@
 package Controller;
 
+import java.util.List;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -89,21 +90,41 @@ public class SocialMediaController {
 
     private void getMessageByIdHandler(Context ctx) {
         int message_id = Integer.parseInt(ctx.pathParam("message_id"));
-        ctx.json(messageService.getMessageById(message_id));
+        Message getMessage = messageService.getMessageById(message_id);
+        if (getMessage != null) {
+            ctx.json(getMessage);
+        }
     }
 
     private void deleteMessageByIdHandler(Context ctx) {
         int message_id = Integer.parseInt(ctx.pathParam("message_id"));
-        ctx.json(messageService.deleteMessageById(message_id));
+        Message deleteMessage = messageService.deleteMessageById(message_id);
+        if (deleteMessage != null) {
+            ctx.json(deleteMessage);
+        }
     }
 
-    private void updateMessageByIdHandler(Context ctx) {
+    /**
+     * Controller handler to update message given a message_id and message_text.
+     * @param ctx
+     */
+    private void updateMessageByIdHandler(Context ctx) throws JsonProcessingException {
+        ObjectMapper mapper = new ObjectMapper();
         int message_id = Integer.parseInt(ctx.pathParam("message_id"));
-        String message_text = ctx.bodyAsClass(Message.class).getMessage_text();
-        ctx.json(messageService.updateMessageById(message_id, message_text));
+        Message message = mapper.readValue(ctx.body(), Message.class);
+        Message updatedMessage = messageService.updateMessageById(message_id, message.getMessage_text());
+        if (updatedMessage == null) {
+            ctx.status(400);
+        } else {
+            ctx.json(updatedMessage);
+        }
     }
 
     private void getAllMessagesGivenAccountIdHandler(Context ctx) {
         int account_id = Integer.parseInt(ctx.pathParam("account_id"));
+        List<Message> listAllMessagesByUser = messageService.getAllMessagesByUser(account_id);
+        if (listAllMessagesByUser != null) {
+            ctx.json(listAllMessagesByUser);
+        }
     }
 }

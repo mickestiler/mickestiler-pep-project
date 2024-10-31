@@ -28,10 +28,11 @@ public class MessageDAO {
             preparedStatement.setString(2, message_text);
             preparedStatement.setLong(3, time_posted_epoch);
             preparedStatement.executeUpdate();
-            ResultSet pkeyResultSet = preparedStatement.getGeneratedKeys();
-            if (pkeyResultSet.next()) {
-                int generated_message_id = (int) pkeyResultSet.getInt(1);
-                Message insertedMessage = new Message(generated_message_id, pkeyResultSet.getString("message_text"), pkeyResultSet.getLong("time_posted_epoch"));
+            ResultSet rs = preparedStatement.getGeneratedKeys();
+            if (rs.next()) {
+                int generated_message_id = rs.getInt(1);
+                Message insertedMessage = new Message(generated_message_id, message.getPosted_by(), 
+                                                    message.getMessage_text(), message.getTime_posted_epoch());
                 return insertedMessage;
             }
         } catch (SQLException e) {
